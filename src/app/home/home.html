@@ -1,0 +1,21 @@
+<div class="home-container">
+  <div class="sidebar">
+    <nav class="menu">
+      <ul>
+        <li class="menu-title">Empresa</li>
+        <li class="menu-title">&nbsp;Configuração da Empresa</li>
+        <li><a routerLink="/company/my-company" routerLinkActive="active">&nbsp;&nbsp;Minha empresa</a></li>
+        <!-- Espaço para outros itens de menu -->
+        <li class="menu-title">&nbsp;Benefícios</li>
+        <li class="menu-title">&nbsp;Áreas</li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="content">
+    <h2>Olá {{ firstName || 'Usuário' }}. Seja bem-vindo.</h2>
+    <p>É necessário configurar a empresa matriz para visualizar todas as informações do sistema.</p>
+    <!-- <button routerLink="/company" class="config-button">Iniciar Configuração</button> -->
+    <a href="/company" class="config-button">Iniciar Configuração</a>
+  </div>
+</div>

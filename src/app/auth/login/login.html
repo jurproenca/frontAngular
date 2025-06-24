@@ -1,0 +1,36 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2 class="login-title">Acesse sua conta</h2>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          placeholder="Digite seu usuário"
+          class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          placeholder="Digite sua senha"
+          class="form-input">
+      </div>
+      
+      <button type="submit" class="login-button" [disabled]="!loginForm.valid">
+        Entrar
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <a routerLink="/signup" class="signup-link" (click)="navigateToSignup()">Cadastre-se</a>
+      <a href="#" class="forgot-password">Esqueci minha senha</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,208 @@
+<div class="home-container">
+  <div class="sidebar">
+    <nav class="menu">
+      <ul>
+        <li class="menu-title">Empresa</li>
+        @if (isCompanySaved()) {
+          <li class="menu-title">&nbsp;Configuração da Empresa</li>
+          <li><a routerLink="/company/my-company" routerLinkActive="active">&nbsp;&nbsp;Minha empresa</a></li>
+          <!-- Mostrar outros itens apenas após cadastro -->
+          @if (isCompanySaved()) {
+            <li class="menu-title">&nbsp;Benefícios</li>
+            <li class="menu-title">&nbsp;Áreas</li>
+          }
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="content">
+    <h2>{{ isEditing() ? 'Editar Empresa' : 'Dados da Empresa' }}</h2>
+
+    @if (!isEditing()) {
+      <div class="view-mode">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de Empresa</label>
+            <div class="form-value">{{ company().companyType || 'Não informado' }}</div>
+          </div>
+          
+          <div class="form-group">
+            <label>Nome da Empresa</label>
+            <div class="form-value">{{ company().name }}</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>CNPJ</label>
+            <div class="form-value">{{ formatCnpj(company().cnpj) }}</div>
+          </div>
+          
+          <div class="form-group">
+            <label>CEP</label>
+            <div class="form-value">{{ formatCep(company().cep) }}</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Endereço</label>
+            <div class="form-value">
+              {{ company().address }}, {{ company().district }}, {{ company().city }}/{{ company().state }}
+              {{ company().complement ? ', ' + company().complement : '' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Celular</label>
+            <div class="form-value">{{ formatPhone(company().phone) }}</div>
+          </div>
+          
+          <div class="form-group">
+            <label>E-mail</label>
+            <div class="form-value">{{ company().email }}</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Administrador</label>
+            <div class="form-value">{{ company().adminName }}</div>
+          </div>
+          
+          <div class="form-group">
+            <label>CPF</label>
+            <div class="form-value">{{ formatCpf(company().cpf) || 'Não informado' }}</div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-primary" (click)="edit()">
+            Editar
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (isEditing()) {
+      <form #companyForm="ngForm" (ngSubmit)="save(companyForm)" class="edit-mode">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="companyType">Tipo de Empresa</label>
+            <input type="text" id="companyType" [(ngModel)]="company().companyType" name="companyType">
+          </div>
+          
+          <div class="form-group required">
+            <label for="name">Nome da Empresa</label>
+            <input type="text" id="name" required [(ngModel)]="company().name" name="name" #name="ngModel">
+            @if (name.invalid && (name.dirty || name.touched)) {
+              <div class="error-message">Nome da empresa é obrigatório</div>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="cnpj">CNPJ</label>
+            <input type="text" id="cnpj" required [(ngModel)]="company().cnpj" name="cnpj" #cnpj="ngModel" 
+                   (blur)="validateCnpj()" [class.invalid]="!validation().cnpjValid">
+            @if (cnpj.invalid && (cnpj.dirty || cnpj.touched)) {
+              <div class="error-message">CNPJ é obrigatório</div>
+            }
+            @if (!validation().cnpjValid && company().cnpj) {
+              <div class="error-message">CNPJ inválido</div>
+            }
+          </div>
+          
+          <div class="form-group">
+            <label for="cep">CEP</label>
+            <input type="text" id="cep" [(ngModel)]="company().cep" name="cep" (blur)="searchAddress()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="address">Endereço</label>
+            <input type="text" id="address" [(ngModel)]="company().address" name="address" readonly>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="district">Bairro</label>
+            <input type="text" id="district" [(ngModel)]="company().district" name="district" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="city">Cidade</label>
+            <input type="text" id="city" [(ngModel)]="company().city" name="city" readonly>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="state">Estado</label>
+            <input type="text" id="state" [(ngModel)]="company().state" name="state" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="complement">Complemento</label>
+            <input type="text" id="complement" [(ngModel)]="company().complement" name="complement">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="phone">Celular</label>
+            <input type="text" id="phone" required [(ngModel)]="company().phone" name="phone" #phone="ngModel">
+            @if (phone.invalid && (phone.dirty || phone.touched)) {
+              <div class="error-message">Celular é obrigatório</div>
+            }
+          </div>
+          
+          <div class="form-group required">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" required [(ngModel)]="company().email" name="email" #email="ngModel" 
+                   (blur)="validateEmail()" [class.invalid]="!validation().emailValid">
+            @if (email.invalid && (email.dirty || email.touched)) {
+              <div class="error-message">E-mail é obrigatório</div>
+            }
+            @if (!validation().emailValid && company().email) {
+              <div class="error-message">E-mail inválido</div>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="adminName">Administrador</label>
+            <input type="text" id="adminName" required [(ngModel)]="company().adminName" name="adminName" #adminName="ngModel">
+            @if (adminName.invalid && (adminName.dirty || adminName.touched)) {
+              <div class="error-message">Nome do administrador é obrigatório</div>
+            }
+          </div>
+          
+          <div class="form-group">
+            <label for="cpf">CPF</label>
+            <input type="text" id="cpf" [(ngModel)]="company().cpf" name="cpf" (blur)="validateCpf()" [class.invalid]="!validation().cpfValid">
+            @if (!validation().cpfValid && company().cpf) {
+              <div class="error-message">CPF inválido</div>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="!companyForm.valid || !isFormValid()">
+            Salvar
+          </button>
+          <button type="button" class="btn-secondary" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+/* Reset mínimo */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: sans-serif; }
+
+/* Reset consistente para títulos */
+h1, h2, h3, h4, h5, h6 {
+  color: #212529 !important; /* Cor escura padrão */
+  opacity: 1 !important;
+}
+
+/* Sobrescreve qualquer estilo que possa estar bloqueando o clique */
+app-home .config-button,
+.config-button {
+  position: relative;
+  z-index: 9999;
+  pointer-events: all;
+}
